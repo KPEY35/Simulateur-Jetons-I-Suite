@@ -117,13 +117,10 @@
     <div class="simulateur">
       <div id="classique" class="bloc active">
         <h2>Simulateur ON PREMISE</h2>
-        <label for="dossiers">1. Nombre de dossiers associés :</label>
-        <input type="number" class="input-reduit" id="dossiers" placeholder="Ex : 10">
+        <label for="jetonsSaisie">1. Nombre de jetons acquis :</label>
+        <input type="number" class="input-reduit" id="jetonsSaisie" placeholder="Ex : 10">
 
-        <label for="moyenJetons">2. Nombre moyen de jetons par dossier :</label>
-        <input type="number" id="moyenJetons" placeholder="Ex : 50">
-
-        <label for="jetons">3. Nombre de jetons acquis :</label>
+        <label for="jetons">3. Cumul de jetons acquis + nécessaires :</label>
         <input type="number" id="jetons" readonly>
 
         <label for="coefRev">4. Coefficient de revente :</label>
@@ -136,13 +133,10 @@
 
       <div id="aod" class="bloc">
         <h2>Simulateur AOD</h2>
-        <label for="dossiersAOD">1. Nombre de dossiers associés :</label>
-        <input type="number" id="dossiersAOD" placeholder="Ex : 10">
+        <label for="jetonsSaisieAOD">1. Nombre de jetons acquis :</label>
+        <input type="number" id="jetonsSaisieAOD" placeholder="Ex : 10">
 
-        <label for="moyenJetonsAOD">2. Nombre moyen de jetons par dossier :</label>
-        <input type="number" id="moyenJetonsAOD" placeholder="Ex : 50">
-
-        <label for="jetonsAOD">3. Nombre de jetons acquis :</label>
+        <label for="jetonsAOD">3. Cumul de jetons acquis + nécessaires :</label>
         <input type="number" id="jetonsAOD" readonly>
 
         <label for="coefRevAOD">4. Coefficient de revente :</label>
@@ -246,17 +240,27 @@
     }
 
     function updateJetons() {
-      const dossiers = parseInt(e("dossiers").value) || 0;
-      const moyen = parseInt(e("moyenJetons").value) || 0;
-      const totalJetons = dossiers * moyen;
-      e("jetons").value = totalJetons;
+      const jetonsSaisie = parseInt(e("jetonsSaisie").value) || 0;
+      const inputs = document.querySelectorAll(".dossier-input");
+      let totalJetonsTableau = 0;
+      inputs.forEach(input => {
+        const jetonsParDossier = parseInt(input.dataset.jetons) || 0;
+        const nombreDossiers = parseInt(input.value) || 0;
+        totalJetonsTableau += jetonsParDossier * nombreDossiers;
+      });
+      e("jetons").value = jetonsSaisie + totalJetonsTableau;
     }
 
     function updateJetonsAOD() {
-      const dossiers = parseInt(e("dossiersAOD").value) || 0;
-      const moyen = parseInt(e("moyenJetonsAOD").value) || 0;
-      const totalJetons = dossiers * moyen;
-      e("jetonsAOD").value = totalJetons;
+      const jetonsSaisie = parseInt(e("jetonsSaisieAOD").value) || 0;
+      const inputs = document.querySelectorAll(".dossier-input");
+      let totalJetonsTableau = 0;
+      inputs.forEach(input => {
+        const jetonsParDossier = parseInt(input.dataset.jetons) || 0;
+        const nombreDossiers = parseInt(input.value) || 0;
+        totalJetonsTableau += jetonsParDossier * nombreDossiers;
+      });
+      e("jetonsAOD").value = jetonsSaisie + totalJetonsTableau;
     }
 
     function calculerClassique() {
@@ -305,7 +309,6 @@
          <p><strong>Marge annuelle :</strong> ${margeAnnuelle.toFixed(2)} €</p>`;
     }
 
-    // Correction de switchTab : utilisation de backticks pour l'interpolation dans querySelector
     function switchTab(id) {
       document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
       document.querySelectorAll('.bloc').forEach(bloc => bloc.classList.remove('active'));
@@ -313,7 +316,6 @@
       document.getElementById(id).classList.add('active');
     }
 
-    // Mise à jour automatique des jetons dans le simulateur via le tableau de droite
     function recalculerJetonsDepuisTableau() {
       const inputs = document.querySelectorAll(".dossier-input");
       let totalJetons = 0;
@@ -324,33 +326,20 @@
         totalJetons += jetonsParDossier * nombreDossiers;
       });
 
-      // Injecte le total dans les deux simulateurs
-      if (e("jetons")) e("jetons").value = totalJetons;
-      if (e("jetonsAOD")) e("jetonsAOD").value = totalJetons;
+      if (e("jetons")) e("jetons").value = (parseInt(e("jetonsSaisie").value) || 0) + totalJetons;
+      if (e("jetonsAOD")) e("jetonsAOD").value = (parseInt(e("jetonsSaisieAOD").value) || 0) + totalJetons;
     }
 
-    // Événement sur chaque input du tableau de droite
     document.querySelectorAll(".dossier-input").forEach(input => {
       input.addEventListener("input", recalculerJetonsDepuisTableau);
     });
 
-    // Événements pour les simulateurs
-    e("dossiers").addEventListener("input", updateJetons);
-    e("moyenJetons").addEventListener("input", updateJetons);
+    e("jetonsSaisie").addEventListener("input", updateJetons);
     e("calculer").addEventListener("click", calculerClassique);
 
-    e("dossiersAOD").addEventListener("input", updateJetonsAOD);
-    e("moyenJetonsAOD").addEventListener("input", updateJetonsAOD);
+    e("jetonsSaisieAOD").addEventListener("input", updateJetonsAOD);
     e("calculerAOD").addEventListener("click", calculerAOD);
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
 
