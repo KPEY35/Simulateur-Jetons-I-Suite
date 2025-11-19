@@ -3,16 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simulateur ACD</title>
+  <title>Simulateur On Premise - ACD</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #f5f5f5;
       margin: 0;
       padding: 0;
-    }
-    .input-reduit {
-      width: 5cm;
     }
     header {
       background-color: #003366;
@@ -22,140 +19,96 @@
       align-items: center;
       gap: 1rem;
     }
-    header img {
-      height: 60px;
-    }
-    .tabs {
-      display: flex;
-      justify-content: center;
-      margin: 1rem;
-    }
-    .tab {
-      padding: 1rem;
-      margin-right: 1rem;
-      cursor: pointer;
-      background: #ddd;
-      border-radius: 5px 5px 0 0;
-    }
-    .tab.active {
-      background: white;
-      font-weight: bold;
-      border-bottom: 2px solid white;
-    }
+    header img { height: 60px; }
     .container {
       display: flex;
-      flex-wrap: wrap;
       padding: 1rem;
       background: white;
-      margin: 0 1rem 1rem;
+      margin: 1rem;
       border-radius: 5px;
+      align-items: flex-start;
     }
     .simulateur {
-      flex: 2;
-      min-width: 300px;
+      flex: 0 0 450px;
       padding: 1rem;
+      background: white;
+      border-radius: 5px;
+      position: sticky;
+      top: 10px;
     }
-    .simulateur label {
-      display: block;
-      margin-top: 1rem;
-    }
-    .simulateur input {
-      width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.2rem;
-    }
-    .simulateur button {
-      margin-top: 1rem;
-      padding: 0.5rem 1rem;
-      background-color: #003366;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
+    .simulateur label { display: block; margin-top: 1rem; }
+    .simulateur input { width: 100%; padding: 0.5rem; margin-top: 0.2rem; }
+    .simulateur button { margin-top: 1rem; padding: 0.5rem 1rem; background-color: #003366; color: white; border: none; cursor: pointer; }
+    .simulateur .btn-reset { background-color: #999; margin-left: 10px; }
     .tableau-droite {
-      flex: 1;
-      min-width: 180px;
+      flex: 0 0 700px;
       padding: 1rem;
+      margin-left: 180px;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
+    .tableau-droite h2 {
       text-align: center;
+      margin-bottom: 1rem;
     }
-    th, td {
-      padding: 0.5rem;
-      border: 1px solid #ccc;
+    table { width: 100%; border-collapse: collapse; text-align: center; }
+    th, td { padding: 0.5rem; border: 1px solid #ccc; }
+    input[type="number"] { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+    .cout-jeton {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #003366;
+      background: #e0f0ff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      display: inline-block;
+      margin-bottom: 1rem;
     }
-    .bloc {
-      display: none;
+    .nav {
+      text-align:center;
+      margin-top: 1rem;
     }
-    .bloc.active {
-      display: block;
-    }
-    input[type="number"] {
-      padding: 8px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+    .nav a {
+      color: #003366;
+      font-weight: bold;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
-  <header>
-    <img src="https://www.acd-groupe.fr/wp-content/uploads/2022/06/Logo-ACD-footer.svg" alt="Logo ACD" />
-    <h1 style="text-align: center; margin: 30px auto; font-size: 1.8rem;">
-      Développer votre chiffre d'affaires avec les outils collaboratifs ACD
-    </h1>
-  </header>
 
-  <div class="tabs">
-    <div class="tab active" onclick="switchTab('classique')">Simulateur personnalisé cabinet On Premise</div>
-    <div class="tab" onclick="switchTab('aod')">Simulateur personnalisé cabinet AOD</div>
+<header>
+  <img src="https://www.acd-groupe.fr/wp-content/uploads/2022/06/Logo-ACD-footer.svg" />
+<h1 style="text-align:center; margin:30px auto; font-size:1.8rem;">Développer votre chiffre d'affaires avec les outils collaboratifs ACD</h1>
+</header>
+
+<div class="container">
+  <div class="simulateur">
+    <h2>Simulateur ON PREMISE</h2>
+
+    <div class="cout-jeton">Coût du jeton : 1,00 €</div>
+
+    <label for="jetonsSaisie">1. Nombre de jetons acquis :</label>
+    <input type="number" id="jetonsSaisie">
+
+    <label for="jetons">2. Cumul total :</label>
+    <input type="number" id="jetons" readonly>
+
+    <label for="prixRev">3. Prix de revente du jeton :</label>
+    <input type="number" id="prixRev" min="0">
+
+    <button id="calculer">Calculer</button>
+    <button class="btn-reset" onclick="resetSimulateur()">Réinitialiser</button>
+
+    <div class="result" id="resultat"></div>
   </div>
 
-  <div class="container">
-    <div class="simulateur">
-      <div id="classique" class="bloc active">
-        <h2>Simulateur ON PREMISE</h2>
-        <label for="jetonsSaisie">1. Nombre de jetons acquis :</label>
-        <input type="number" class="input-reduit" id="jetonsSaisie" placeholder="Ex : 10">
-
-        <label for="jetons">3. Cumul de jetons acquis + nécessaires :</label>
-        <input type="number" id="jetons" readonly>
-
-        <label for="coefRev">4. Coefficient de revente :</label>
-        <input type="number" step="0.01" id="coefRev" placeholder="Ex : 1.7">
-
-        <button id="calculer">Calculer</button>
-
-        <div class="result" id="resultat"></div>
-      </div>
-
-      <div id="aod" class="bloc">
-        <h2>Simulateur AOD</h2>
-        <label for="jetonsSaisieAOD">1. Nombre de jetons acquis :</label>
-        <input type="number" id="jetonsSaisieAOD" placeholder="Ex : 10">
-
-        <label for="jetonsAOD">3. Cumul de jetons acquis + nécessaires :</label>
-        <input type="number" id="jetonsAOD" readonly>
-
-        <label for="coefRevAOD">4. Coefficient de revente :</label>
-        <input type="number" step="0.01" id="coefRevAOD" placeholder="Ex : 1.7">
-
-        <button id="calculerAOD">Calculer</button>
-
-        <div class="result" id="resultatAOD"></div>
-      </div>
-    </div>
-
-    <div class="tableau-droite">
-      <h2>Services i-Suite Expert</h2>
-      <table>
-        <thead>
-          <th><a href="https://www.acd-groupe.fr/wp-content/uploads/2024/10/Pack-sc-ACD_sept2024.pdf" target="_blank">Services</a></th>
-<th>Jetons</th><th>Nombre de dossiers</th></tr>
-        </thead>
-        <tbody>
+  <div class="tableau-droite">
+    <h2>Services i-Suite Expert</h2>
+    <table>
+      <thead>
+      <tr><th><a href="https://www.acd-groupe.fr/wp-content/uploads/2024/10/Pack-sc-ACD_sept2024.pdf" target="_blank">Services</a></th>
+	<th>Jetons</th><th>Dossiers</th></tr>
+      </thead>
+      <tbody>
           <tr><td>i-Dépôt</td><td>0</td><td><input type="number" class="dossier-input" data-jetons="0"></td></tr>
           <tr><td>i-Acquisition</td><td>1</td><td><input type="number" class="dossier-input" data-jetons="1"></td></tr>
           <tr><td>i-Ged Expert</td><td>2</td><td><input type="number" class="dossier-input" data-jetons="2"></td></tr>
@@ -182,164 +135,63 @@
           <tr><td>i-Paie → 49 salariés</td><td>4</td><td><input type="number" class="dossier-input" data-jetons="4"></td></tr>
           <tr><td>i-Paie+ 49 salariés</td><td>8</td><td><input type="number" class="dossier-input" data-jetons="8"></td></tr>
           <tr><td>i-Salarié</td><td>0</td><td><input type="number" class="dossier-input" data-jetons="0"></td></tr>
-        </tbody>
-      </table>
-    </div>
+      </tbody>
+    </table>
   </div>
+</div>
 
-  <script>
-    const tranches = [
-      { min: 0, coefficient: 1 },
-      { min: 251, coefficient: 0.95 },
-      { min: 401, coefficient: 0.90 },
-      { min: 601, coefficient: 0.85 },
-      { min: 901, coefficient: 0.80 },
-      { min: 1501, coefficient: 0.75 },
-      { min: 2251, coefficient: 0.70 },
-      { min: 3376, coefficient: 0.65 },
-      { min: 5001, coefficient: 0.60 },
-      { min: 7501, coefficient: 0.55 },
-      { min: 10001, coefficient: 0.50 },
-      { min: 25001, coefficient: 0.48 },
-      { min: 50001, coefficient: 0.46 },
-      { min: 90001, coefficient: 0.44 },
-      { min: 150001, coefficient: 0.42 },
-      { min: 300001, coefficient: 0.40 }
-    ];
+<script>
+  const tranches = [
+    { min: 0, coefficient: 1 }, { min: 251, coefficient: 0.95 }, { min: 401, coefficient: 0.90 },
+    { min: 601, coefficient: 0.85 }, { min: 901, coefficient: 0.80 }, { min: 1501, coefficient: 0.75 },
+    { min: 2251, coefficient: 0.70 }, { min: 3376, coefficient: 0.65 }, { min: 5001, coefficient: 0.60 },
+    { min: 7501, coefficient: 0.55 }, { min: 10001, coefficient: 0.50 }, { min: 25001, coefficient: 0.48 },
+    { min: 50001, coefficient: 0.46 }, { min: 90001, coefficient: 0.44 }, { min: 150001, coefficient: 0.42 },
+    { min: 300001, coefficient: 0.40 }
+  ];
+  const e = id => document.getElementById(id);
 
-    const tranchesAOD = [
-      { min: 0, coefficient: 1.25 },
-      { min: 251, coefficient: 1.20 },
-      { min: 401, coefficient: 1.15 },
-      { min: 601, coefficient: 1.10 },
-      { min: 901, coefficient: 1.05 },
-      { min: 1501, coefficient: 1.00 },
-      { min: 2251, coefficient: 0.95 },
-      { min: 3376, coefficient: 0.90 },
-      { min: 5001, coefficient: 0.85 },
-      { min: 7501, coefficient: 0.80 },
-      { min: 10001, coefficient: 0.75 },
-      { min: 25001, coefficient: 0.48 },
-      { min: 50001, coefficient: 0.46 },
-      { min: 90001, coefficient: 0.44 },
-      { min: 150001, coefficient: 0.42 },
-      { min: 300001, coefficient: 0.40 }
-    ];
-
-    const e = id => document.getElementById(id);
-
-    function getCoefficient(jetons, grille) {
-      let coeff = grille[0].coefficient;
-      for (let i = grille.length - 1; i >= 0; i--) {
-        if (jetons >= grille[i].min) {
-          coeff = grille[i].coefficient;
-          break;
-        }
-      }
-      return coeff;
+  function getCoefficient(jetons, grille) {
+    for (let i = grille.length - 1; i >= 0; i--) {
+      if (jetons >= grille[i].min) return grille[i].coefficient;
     }
+    return grille[0].coefficient;
+  }
 
-    function updateJetons() {
-      const jetonsSaisie = parseInt(e("jetonsSaisie").value) || 0;
-      const inputs = document.querySelectorAll(".dossier-input");
-      let totalJetonsTableau = 0;
-      inputs.forEach(input => {
-        const jetonsParDossier = parseInt(input.dataset.jetons) || 0;
-        const nombreDossiers = parseInt(input.value) || 0;
-        totalJetonsTableau += jetonsParDossier * nombreDossiers;
-      });
-      e("jetons").value = jetonsSaisie + totalJetonsTableau;
-    }
-
-    function updateJetonsAOD() {
-      const jetonsSaisie = parseInt(e("jetonsSaisieAOD").value) || 0;
-      const inputs = document.querySelectorAll(".dossier-input");
-      let totalJetonsTableau = 0;
-      inputs.forEach(input => {
-        const jetonsParDossier = parseInt(input.dataset.jetons) || 0;
-        const nombreDossiers = parseInt(input.value) || 0;
-        totalJetonsTableau += jetonsParDossier * nombreDossiers;
-      });
-      e("jetonsAOD").value = jetonsSaisie + totalJetonsTableau;
-    }
-
-    function calculerClassique() {
-      const jetons = parseInt(e("jetons").value);
-      const coefRev = parseFloat(e("coefRev").value);
-
-      if (!jetons || !coefRev || coefRev <= 0) {
-        e("resultat").innerHTML = '<p style="color:red;">Veuillez remplir tous les champs avec des valeurs valides.</p>';
-        return;
-      }
-
-      const coeff = getCoefficient(jetons, tranches);
-      const coutTotal = jetons * coeff;
-      const revenus = coutTotal * coefRev;
-      const margeMensuelle = revenus - coutTotal;
-      const margeAnnuelle = margeMensuelle * 12;
-
-      e("resultat").innerHTML = 
-        `<p><strong>Coût unitaire :</strong> ${coeff.toFixed(2)} €</p>
-         <p><strong>Coût total des jetons :</strong> ${coutTotal.toFixed(2)} €</p>
-         <p><strong>Revenus estimés :</strong> ${revenus.toFixed(2)} €</p>
-         <p><strong>Marge mensuelle :</strong> ${margeMensuelle.toFixed(2)} €</p>
-         <p><strong>Marge annuelle :</strong> ${margeAnnuelle.toFixed(2)} €</p>`;
-    }
-
-    function calculerAOD() {
-      const jetons = parseInt(e("jetonsAOD").value);
-      const coefRev = parseFloat(e("coefRevAOD").value);
-
-      if (!jetons || !coefRev || coefRev <= 0) {
-        e("resultatAOD").innerHTML = '<p style="color:red;">Veuillez remplir tous les champs avec des valeurs valides.</p>';
-        return;
-      }
-
-      const coeff = getCoefficient(jetons, tranchesAOD);
-      const coutTotal = jetons * coeff;
-      const revenus = coutTotal * coefRev;
-      const margeMensuelle = revenus - coutTotal;
-      const margeAnnuelle = margeMensuelle * 12;
-
-      e("resultatAOD").innerHTML = 
-        `<p><strong>Coût unitaire :</strong> ${coeff.toFixed(2)} €</p>
-         <p><strong>Coût total des jetons :</strong> ${coutTotal.toFixed(2)} €</p>
-         <p><strong>Revenus estimés :</strong> ${revenus.toFixed(2)} €</p>
-         <p><strong>Marge mensuelle :</strong> ${margeMensuelle.toFixed(2)} €</p>
-         <p><strong>Marge annuelle :</strong> ${margeAnnuelle.toFixed(2)} €</p>`;
-    }
-
-    function switchTab(id) {
-      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.bloc').forEach(bloc => bloc.classList.remove('active'));
-      document.querySelector(`.tab[onclick*="${id}"]`).classList.add('active');
-      document.getElementById(id).classList.add('active');
-    }
-
-    function recalculerJetonsDepuisTableau() {
-      const inputs = document.querySelectorAll(".dossier-input");
-      let totalJetons = 0;
-
-      inputs.forEach(input => {
-        const jetonsParDossier = parseInt(input.dataset.jetons) || 0;
-        const nombreDossiers = parseInt(input.value) || 0;
-        totalJetons += jetonsParDossier * nombreDossiers;
-      });
-
-      if (e("jetons")) e("jetons").value = (parseInt(e("jetonsSaisie").value) || 0) + totalJetons;
-      if (e("jetonsAOD")) e("jetonsAOD").value = (parseInt(e("jetonsSaisieAOD").value) || 0) + totalJetons;
-    }
-
-    document.querySelectorAll(".dossier-input").forEach(input => {
-      input.addEventListener("input", recalculerJetonsDepuisTableau);
+  function updateJetons() {
+    let total = parseInt(e("jetonsSaisie").value) || 0;
+    document.querySelectorAll('.dossier-input').forEach(inp => {
+      total += (parseInt(inp.dataset.jetons) || 0) * (parseInt(inp.value) || 0);
     });
+    e("jetons").value = total;
+  }
 
-    e("jetonsSaisie").addEventListener("input", updateJetons);
-    e("calculer").addEventListener("click", calculerClassique);
+  function resetSimulateur() {
+    document.querySelectorAll('input[type="number"]').forEach(i => i.value = "");
+    document.querySelectorAll('.result').forEach(r => r.innerHTML = "");
+  }
 
-    e("jetonsSaisieAOD").addEventListener("input", updateJetonsAOD);
-    e("calculerAOD").addEventListener("click", calculerAOD);
-  </script>
+  e("jetonsSaisie").addEventListener("input", updateJetons);
+  document.querySelectorAll(".dossier-input").forEach(i => i.addEventListener("input", updateJetons));
+
+  e("calculer").addEventListener("click", () => {
+    const jetons = parseInt(e("jetons").value) || 0;
+    const prixRev = parseFloat(e("prixRev").value) || 0;
+    const coeff = getCoefficient(jetons, tranches);
+    const coutTotal = jetons * coeff;
+    const revenu = jetons * prixRev;
+    const margeMensuelle = revenu - coutTotal;
+    const margeAnnuelle = margeMensuelle * 12;
+
+    e("resultat").innerHTML = `
+      <p><strong>Coût unitaire :</strong> ${coeff.toFixed(2)} €</p>
+      <p><strong>Coût total :</strong> ${coutTotal.toFixed(2)} €</p>
+      <p><strong>Revenu estimé :</strong> ${revenu.toFixed(2)} €</p>
+      <p><strong>Marge mensuelle :</strong> ${margeMensuelle.toFixed(2)} €</p>
+      <p><strong>Marge annuelle :</strong> ${margeAnnuelle.toFixed(2)} €</p>
+    `;
+  });
+</script>
+
 </body>
 </html>
-
