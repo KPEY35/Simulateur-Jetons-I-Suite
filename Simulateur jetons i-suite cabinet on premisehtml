@@ -168,7 +168,7 @@
           <tr><td>i-Admin <span class="info" tabindex="0" role="button" aria-label="Information" data-tip="Gestion de la création de nouveaux utilisateurs et des droits d’accès aux modules">i</span></td><td class="inclus">Inclus</td><td>—</td></tr>
           <tr class="categorie"><td colspan="3"><span class="num">1</span>Facturation électronique</td></tr>
           <tr class="groupe-titre" data-groupe="facture" aria-expanded="false" tabindex="0">
-            <td><span class="fleche">▶</span>i-Facture <span class="info" tabindex="0" role="button" aria-label="Information" data-tip="Réception des factures fournisseurs via la PA LVC - - dépliez le bandeau pour retrouver les versions">i</span></td><td>—</td>
+            <td><span class="fleche">▶</span>i-Facture <span class="info" tabindex="0" role="button" aria-label="Information" data-tip="Réception des factures fournisseurs via la PA LVC - dépliez le bandeau pour retrouver les versions">i</span></td><td>—</td>
             <td><span class="total-groupe" id="total-facture">0 dossier</span></td>
           </tr>
           <tr class="sous-ligne" data-groupe="facture"><td>i-Facture &lt; 20 factures</td><td>1</td><td><input type="number" class="dossier-input" data-jetons="1" data-groupe="facture" min="0"></td></tr>
